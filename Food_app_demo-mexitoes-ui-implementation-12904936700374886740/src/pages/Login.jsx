@@ -84,12 +84,8 @@ export default function Login() {
     return (
         <div className="min-h-screen bg-background-dark flex flex-col items-center justify-center px-6">
             {/* Logo */}
-            <div className="flex flex-col items-center mb-10">
-                <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/30 flex items-center justify-center mb-4 shadow-xl shadow-primary-dark/50">
-                    <span className="text-5xl">🌮</span>
-                </div>
-                <h1 className="text-3xl font-extrabold text-white tracking-tight">Mexitoes</h1>
-                <p className="text-slate-400 text-sm mt-1">Fresh Bites, Fast Delivery</p>
+            <div className="flex flex-col items-center mb-10 w-full px-4">
+                <img src="/logo.png" alt="Mexitoes Express Logo" className="w-full max-w-[280px] h-auto object-contain drop-shadow-2xl" />
             </div>
 
             <div className="w-full max-w-sm">

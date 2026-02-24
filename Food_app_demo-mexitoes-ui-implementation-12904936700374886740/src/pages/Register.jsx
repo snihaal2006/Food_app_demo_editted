@@ -32,12 +32,8 @@ export default function Register() {
     return (
         <div className="min-h-screen bg-background-dark flex flex-col items-center justify-center px-6 py-12">
             {/* Logo */}
-            <div className="flex flex-col items-center mb-8">
-                <div className="w-20 h-20 bg-primary rounded-3xl flex items-center justify-center shadow-2xl shadow-primary/40 mb-4">
-                    <span className="text-4xl">🌮</span>
-                </div>
-                <h1 className="text-3xl font-extrabold text-white">Mexitoes</h1>
-                <p className="text-slate-400 text-sm mt-1">The real taste of Mexico</p>
+            <div className="flex flex-col items-center mb-8 w-full px-4">
+                <img src="/logo.png" alt="Mexitoes Express Logo" className="w-full max-w-[280px] h-auto object-contain drop-shadow-2xl" />
             </div>
 
             <div className="w-full max-w-sm bg-surface-dark border border-white/10 rounded-3xl p-7 shadow-2xl">

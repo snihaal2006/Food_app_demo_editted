@@ -45,7 +45,7 @@ export default function Tracking() {
   const currentStatusIdx = order ? STATUSES.indexOf(order.status) : 0;
 
   if (loading) {
-    return <div className="min-h-screen bg-background-dark flex items-center justify-center"><span className="text-5xl animate-bounce">🌮</span></div>;
+    return <div className="min-h-screen bg-background-dark flex flex-col items-center justify-center gap-4"><img src="/logo.png" alt="Loading" className="w-32 h-auto animate-pulse drop-shadow-2xl" /></div>;
   }
 
   return (

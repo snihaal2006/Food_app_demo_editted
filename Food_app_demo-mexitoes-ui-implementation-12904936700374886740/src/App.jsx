@@ -17,8 +17,7 @@ function ProtectedRoute({ children }) {
     return (
       <div className="min-h-screen bg-background-dark flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <span className="text-5xl animate-bounce">🌮</span>
-          <p className="text-slate-400 text-sm">Loading Mexitoes...</p>
+          <img src="/logo.png" alt="Loading" className="w-40 h-auto animate-pulse drop-shadow-2xl" />
         </div>
       </div>
     );

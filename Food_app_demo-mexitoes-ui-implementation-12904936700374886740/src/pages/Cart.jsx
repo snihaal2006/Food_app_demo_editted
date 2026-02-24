@@ -31,7 +31,7 @@ export default function Cart() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background-dark flex items-center justify-center">
-        <span className="text-4xl animate-bounce">🌮</span>
+        <img src="/logo.png" alt="Loading" className="w-32 h-auto animate-pulse drop-shadow-2xl" />
       </div>
     );
   }
