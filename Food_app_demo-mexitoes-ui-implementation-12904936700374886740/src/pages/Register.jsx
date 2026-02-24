@@ -75,7 +75,7 @@ export default function Register() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-primary hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/30 transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                        className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/30 transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
                     >
                         {loading
                             ? <span className="material-symbols-outlined animate-spin text-xl">progress_activity</span>
@@ -87,7 +87,7 @@ export default function Register() {
                 <div className="mt-6 text-center">
                     <p className="text-slate-400 text-sm">
                         Already have an account?{' '}
-                        <Link to="/login" className="text-primary font-bold hover:text-orange-400 transition-colors">
+                        <Link to="/login" className="text-primary font-bold hover:text-accent transition-colors">
                             Sign in
                         </Link>
                     </p>

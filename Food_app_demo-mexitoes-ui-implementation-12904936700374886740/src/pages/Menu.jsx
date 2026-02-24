@@ -156,7 +156,7 @@ export default function Menu() {
                         <button
                           onClick={e => handleAddToCart(e, item.id)}
                           disabled={loadingItem === item.id}
-                          className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white hover:bg-orange-600 active:scale-95 transition-all disabled:opacity-60 shadow-md shadow-primary/30"
+                          className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary-dark active:scale-95 transition-all disabled:opacity-60 shadow-md shadow-primary/30"
                         >
                           <span className="material-symbols-outlined text-[18px]">{loadingItem === item.id ? 'progress_activity' : 'add'}</span>
                         </button>
@@ -184,7 +184,7 @@ export default function Menu() {
       {cartCount > 0 && (
         <div className="fixed bottom-28 left-0 right-0 z-50 flex justify-center pointer-events-none">
           <div className="w-full max-w-md px-4 pointer-events-auto">
-            <Link to="/cart" className="w-full bg-primary text-white p-4 rounded-2xl shadow-2xl shadow-orange-900/50 flex items-center justify-between hover:bg-orange-600 transition-colors">
+            <Link to="/cart" className="w-full bg-primary text-white p-4 rounded-2xl shadow-2xl shadow-primary-dark/50 flex items-center justify-between hover:bg-primary-dark transition-colors">
               <div className="flex items-center gap-3">
                 <div className="bg-black/20 h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm">{cartCount}</div>
                 <span className="font-bold">View Cart</span>

@@ -53,7 +53,7 @@ export default function Cart() {
           <span className="text-7xl">🛒</span>
           <h3 className="text-xl font-bold text-white">Your cart is empty</h3>
           <p className="text-slate-400 text-sm text-center">Add some delicious items from our menu!</p>
-          <Link to="/menu" className="bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/30 hover:bg-orange-600 transition-colors">
+          <Link to="/menu" className="bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-colors">
             Browse Menu
           </Link>
         </div>

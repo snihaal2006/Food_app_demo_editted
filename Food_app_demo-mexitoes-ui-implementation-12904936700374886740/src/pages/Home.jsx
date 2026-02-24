@@ -176,7 +176,7 @@ export default function Home() {
           <h2 className="text-xl font-bold text-white">
             {search ? `"${search}" results` : 'Popular Near You 🔥'}
           </h2>
-          {!search && <Link to="/menu" className="text-primary text-sm font-semibold hover:text-orange-400">View All</Link>}
+          {!search && <Link to="/menu" className="text-primary text-sm font-semibold hover:text-accent">View All</Link>}
         </div>
 
         {displayItems.length === 0 && search && (
@@ -217,7 +217,7 @@ export default function Home() {
                   {getItemQty(item.id) === 0 ? (
                     <button
                       onClick={(e) => handleAdd(e, item.id)}
-                      className="bg-primary hover:bg-orange-600 text-white rounded-full px-5 py-2.5 text-sm font-bold flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-primary/20"
+                      className="bg-primary hover:bg-primary-dark text-white rounded-full px-5 py-2.5 text-sm font-bold flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-primary/20"
                     >
                       Add <span className="material-symbols-outlined text-lg">add</span>
                     </button>
@@ -243,7 +243,7 @@ export default function Home() {
       {cartCount > 0 && (
         <div className="fixed bottom-28 left-0 right-0 z-50 flex justify-center pointer-events-none">
           <div className="w-full max-w-md px-4 pointer-events-auto">
-            <Link to="/cart" className="w-full bg-primary text-white p-4 rounded-2xl shadow-2xl shadow-orange-900/50 flex items-center justify-between hover:bg-orange-600 transition-colors group">
+            <Link to="/cart" className="w-full bg-primary text-white p-4 rounded-2xl shadow-2xl shadow-primary-dark/50 flex items-center justify-between hover:bg-primary-dark transition-colors group">
               <div className="flex items-center gap-3">
                 <div className="bg-black/20 h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm">{cartCount}</div>
                 <span className="font-bold">View Cart</span>

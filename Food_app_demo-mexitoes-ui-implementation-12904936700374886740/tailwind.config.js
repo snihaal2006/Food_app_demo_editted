@@ -8,13 +8,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#ec6d13",
-        "primary-dark": "#d15c0b",
+        "primary": "#ce1713", // Romantic Kiss (Red)
+        "primary-dark": "#a8120e",
+        "accent": "#ffc152", // Web Golden Tainoi (Yellow)
         "background-light": "#f8f7f6",
-        "background-dark": "#181411",
-        "surface-dark": "#241e19",
+        "background-dark": "#000000", // Black
+        "surface-dark": "#111111",
         "surface-light": "#ffffff",
-        "surface-highlight": "#2C2C2C",
+        "surface-highlight": "#222222",
       },
       fontFamily: {
         "display": ["Plus Jakarta Sans", "sans-serif"]

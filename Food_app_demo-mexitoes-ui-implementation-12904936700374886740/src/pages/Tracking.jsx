@@ -67,7 +67,7 @@ export default function Tracking() {
         <div className="absolute inset-0 bg-gradient-to-b from-background-dark/20 via-transparent to-background-dark/90"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 overflow-visible z-0 pointer-events-none">
-            <path className="opacity-80 drop-shadow-[0_0_8px_rgba(236,109,19,0.6)]" d="M 20 200 Q 80 150 120 120 T 220 50" fill="none" stroke="#ec6d13" strokeDasharray="10 4" strokeLinecap="round" strokeWidth="6"></path>
+            <path className="opacity-80 drop-shadow-[0_0_8px_rgba(206,23,19,0.6)]" d="M 20 200 Q 80 150 120 120 T 220 50" fill="none" stroke="#ce1713" strokeDasharray="10 4" strokeLinecap="round" strokeWidth="6"></path>
           </svg>
           <div className="absolute top-[28%] left-[20%] flex flex-col items-center z-10">
             <div className="w-10 h-10 bg-background-dark rounded-full flex items-center justify-center border-2 border-primary shadow-lg">
@@ -143,7 +143,7 @@ export default function Tracking() {
               <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center border-2 border-white/10">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center border-2 border-white/10">
                       <span className="text-2xl">🏍️</span>
                     </div>
                     <div className="absolute -bottom-1 -right-1 bg-white text-background-dark text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center border border-background-dark">
@@ -170,7 +170,7 @@ export default function Tracking() {
 
               {order.status === 'delivered' && (
                 <div className="mt-6 flex gap-3">
-                  <button onClick={() => navigate('/orders')} className="flex-1 py-3 bg-primary text-white font-bold rounded-xl hover:bg-orange-600 transition-colors">
+                  <button onClick={() => navigate('/orders')} className="flex-1 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-colors">
                     View Orders
                   </button>
                   <button onClick={() => navigate('/menu')} className="flex-1 py-3 bg-surface-dark border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors">

@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 const STATUS_COLOR = {
   placed: 'bg-blue-500/10 text-blue-400',
   preparing: 'bg-yellow-500/10 text-yellow-400',
-  out_for_delivery: 'bg-orange-500/10 text-orange-400',
+  out_for_delivery: 'bg-accent/10 text-accent',
   delivered: 'bg-green-500/10 text-green-400',
   cancelled: 'bg-red-500/10 text-red-400',
 };
@@ -87,7 +87,7 @@ export default function OrderHistory() {
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <span className="text-6xl">📋</span>
           <p className="text-white font-bold text-lg">No {activeTab === 'past' ? 'past' : 'upcoming'} orders</p>
-          <button onClick={() => navigate('/menu')} className="bg-primary text-white px-6 py-2.5 rounded-full font-bold hover:bg-orange-600 transition-colors">
+          <button onClick={() => navigate('/menu')} className="bg-primary text-white px-6 py-2.5 rounded-full font-bold hover:bg-primary-dark transition-colors">
             Order Now
           </button>
         </div>
@@ -96,7 +96,7 @@ export default function OrderHistory() {
           <div key={order.id} className={`bg-white dark:bg-surface-dark rounded-xl p-4 shadow-sm border border-slate-100 dark:border-surface-highlight flex flex-col gap-4 ${order.status === 'cancelled' ? 'opacity-75' : ''}`}>
             <div className="flex justify-between items-start">
               <div className="flex gap-3">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-orange-800/20 border border-primary/20 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary-dark/50 border border-primary/20 flex items-center justify-center shrink-0">
                   <span className="text-2xl">🍛</span>
                 </div>
                 <div>

@@ -85,7 +85,7 @@ export default function Login() {
         <div className="min-h-screen bg-background-dark flex flex-col items-center justify-center px-6">
             {/* Logo */}
             <div className="flex flex-col items-center mb-10">
-                <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/30 flex items-center justify-center mb-4 shadow-xl shadow-primary/10">
+                <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/30 flex items-center justify-center mb-4 shadow-xl shadow-primary-dark/50">
                     <span className="text-5xl">🌮</span>
                 </div>
                 <h1 className="text-3xl font-extrabold text-white tracking-tight">Mexitoes</h1>
@@ -118,7 +118,7 @@ export default function Login() {
                         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
                         <button
-                            className="w-full bg-primary text-white py-4 rounded-2xl text-base font-bold hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-primary/30 disabled:opacity-60 flex items-center justify-center gap-2"
+                            className="w-full bg-primary text-white py-4 rounded-2xl text-base font-bold hover:bg-primary-dark active:scale-95 transition-all shadow-lg shadow-primary/30 disabled:opacity-60 flex items-center justify-center gap-2"
                             disabled={loading || phone.length !== 10}
                             type="submit"
                         >
@@ -173,7 +173,7 @@ export default function Login() {
                         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
                         <button
-                            className="w-full bg-primary text-white py-4 rounded-2xl text-base font-bold hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-primary/30 disabled:opacity-60 flex items-center justify-center gap-2"
+                            className="w-full bg-primary text-white py-4 rounded-2xl text-base font-bold hover:bg-primary-dark active:scale-95 transition-all shadow-lg shadow-primary/30 disabled:opacity-60 flex items-center justify-center gap-2"
                             disabled={loading || otp.join('').length !== 4}
                             type="submit"
                         >
@@ -186,7 +186,7 @@ export default function Login() {
                                 type="button"
                                 onClick={handleResend}
                                 disabled={resendTimer > 0}
-                                className={`text-sm transition-colors ${resendTimer > 0 ? 'text-slate-500 cursor-not-allowed' : 'text-primary hover:text-orange-400'}`}
+                                className={`text-sm transition-colors ${resendTimer > 0 ? 'text-slate-500 cursor-not-allowed' : 'text-primary hover:text-accent'}`}
                             >
                                 {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
                             </button>

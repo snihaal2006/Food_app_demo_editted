@@ -43,7 +43,7 @@ export default function Profile() {
   const tierColors = {
     Standard: 'from-slate-500 to-slate-600',
     Silver: 'from-slate-400 to-slate-500',
-    Gold: 'from-primary to-orange-400',
+    Gold: 'from-primary to-accent',
     Platinum: 'from-purple-500 to-indigo-600',
   };
 
@@ -69,12 +69,12 @@ export default function Profile() {
 
       {/* Profile Header */}
       <div className="flex flex-col items-center w-full px-6 py-8">
-        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-orange-800/20 border-4 border-surface-dark shadow-xl flex items-center justify-center">
+        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary-dark/50 border-4 border-surface-dark shadow-xl flex items-center justify-center">
           <span className="text-5xl">👤</span>
         </div>
         <h1 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white text-center">{profile?.name || user?.name}</h1>
         <p className="text-slate-500 dark:text-[#b9a89d] text-sm font-medium mt-1">{profile?.email || user?.email}</p>
-        <div className={`mt-4 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r ${tierColors[profile?.loyalty_tier] || 'from-primary to-orange-400'} rounded-full shadow-lg`}>
+        <div className={`mt-4 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r ${tierColors[profile?.loyalty_tier] || 'from-primary to-accent'} rounded-full shadow-lg`}>
           <span className="material-symbols-outlined text-white text-[20px]">verified</span>
           <span className="text-white text-sm font-bold tracking-wide uppercase">Mexitoes {profile?.loyalty_tier || 'Standard'}</span>
         </div>
@@ -98,7 +98,7 @@ export default function Profile() {
               />
             </div>
           ))}
-          <button onClick={handleSave} disabled={saving} className="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/30 hover:bg-orange-600 transition-all disabled:opacity-60">
+          <button onClick={handleSave} disabled={saving} className="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all disabled:opacity-60">
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
@@ -114,7 +114,7 @@ export default function Profile() {
           ].map(item => (
             <button key={item.label} onClick={item.action} className="w-full group flex items-center justify-between p-4 bg-white dark:bg-[#27201c] rounded-2xl hover:bg-gray-50 dark:hover:bg-[#322a25] transition-all border border-transparent hover:border-primary/20">
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 text-primary">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 dark:bg-primary-dark/20 text-primary">
                   <span className="material-symbols-outlined">{item.icon}</span>
                 </div>
                 <div className="flex flex-col items-start">
