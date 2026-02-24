@@ -50,8 +50,8 @@ export default function OrderSuccess() {
                     Order Placed<br />Successfully!
                 </h2>
 
-                <p className="text-slate-400 text-center text-[15px] leading-relaxed px-4">
-                    Your luxury meal is being prepared<br />with the finest ingredients.
+                <p className="text-slate-400 text-center text-[15px] leading-relaxed px-4 italic">
+                    "Good food is the foundation of genuine happiness."
                 </p>
 
                 {/* Info Card */}
