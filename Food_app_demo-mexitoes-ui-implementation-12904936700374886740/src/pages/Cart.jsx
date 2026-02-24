@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ordersAPI } from '../api/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function Cart() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { cartItems, cartSubtotal, cartTax, cartTotal, updateQuantity, loading, fetchCart } = useCart();
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
@@ -163,14 +165,24 @@ export default function Cart() {
           {/* Sticky Place Order */}
           <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center w-full pointer-events-none">
             <div className="w-full max-w-md p-4 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 backdrop-blur-lg bg-opacity-90 dark:bg-opacity-90 pointer-events-auto">
-              <button
-                onClick={handlePlaceOrder}
-                disabled={placing}
-                className="w-full bg-primary hover:bg-primary/90 text-white font-bold text-lg h-14 rounded-full flex items-center justify-between px-6 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all disabled:opacity-60"
-              >
-                <span>{placing ? 'Placing Order...' : 'Place Order'}</span>
-                <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-semibold">₹{finalTotal.toFixed(0)}</span>
-              </button>
+              {(!user?.address || !user.address.trim()) ? (
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="w-full bg-red-500 hover:bg-red-600 text-white font-bold text-lg h-14 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all"
+                >
+                  <span className="material-symbols-outlined text-[20px]">location_on</span>
+                  <span>Set Delivery Address</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handlePlaceOrder}
+                  disabled={placing}
+                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold text-lg h-14 rounded-full flex items-center justify-between px-6 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all disabled:opacity-60"
+                >
+                  <span>{placing ? 'Placing Order...' : 'Place Order'}</span>
+                  <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-semibold">₹{finalTotal.toFixed(0)}</span>
+                </button>
+              )}
             </div>
           </div>
         </>
