@@ -129,7 +129,7 @@ export default function Tracking() {
                       {active && <div className="absolute -left-[23px] top-0 bg-background-dark rounded-full p-1 border border-primary shadow-[0_0_10px_rgba(236,109,19,0.4)]"><div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div></div>}
                       {!done && !active && <div className="absolute -left-[19px] top-1 w-3 h-3 bg-white/20 rounded-full border-4 border-background-dark"></div>}
                       <div className="flex flex-col">
-                        <h3 className={`text-base font-medium ?{done ? 'text-slate-400 line-through decoration-slate-600' : active ? 'text-white text-lg font-bold' : 'text-slate-500'}`}>
+                        <h3 className={`text-base font-medium ${done ? 'text-slate-400' : active ? 'text-white text-lg font-bold' : 'text-slate-500'}`}>
                           {STATUS_LABELS[status]}
                         </h3>
                         {active && <p className="text-primary text-sm mt-0.5">{STATUS_TIMES[status]}</p>}
