@@ -51,7 +51,7 @@ router.post('/send-otp', async (req, res) => {
         return res.status(500).json({ error: 'Failed to send OTP using Fast2SMS. Please try again.' });
     }
 
-    res.json({ success: true, message: 'OTP sent to your number' });
+    res.json({ success: true, message: 'OTP sent to your number', demo_otp: otp });
 });
 
 // POST /api/auth/verify-otp

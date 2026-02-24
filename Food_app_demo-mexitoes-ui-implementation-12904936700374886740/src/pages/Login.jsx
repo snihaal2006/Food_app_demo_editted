@@ -12,6 +12,7 @@ export default function Login() {
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [demoOtp, setDemoOtp] = useState(''); // NEW STATE FOR DEMO OTP
     const [resendTimer, setResendTimer] = useState(0);
     const otpRefs = [useRef(), useRef(), useRef(), useRef()];
     const timerRef = useRef(null);
@@ -29,6 +30,7 @@ export default function Login() {
         setLoading(true); setError('');
         try {
             const data = await sendOtp(phone);
+            if (data?.demo_otp) setDemoOtp(data.demo_otp);
             setStep('otp');
             startTimer();
             setTimeout(() => otpRefs[0].current?.focus(), 100);
@@ -70,6 +72,7 @@ export default function Login() {
         setLoading(true); setError('');
         try {
             const data = await sendOtp(phone);
+            if (data?.demo_otp) setDemoOtp(data.demo_otp);
             setOtp(['', '', '', '']);
             startTimer();
             otpRefs[0].current?.focus();
@@ -131,6 +134,11 @@ export default function Login() {
                             </button>
                             <h2 className="text-xl font-bold text-white mb-1">Enter OTP</h2>
                             <p className="text-slate-400 text-sm">Sent to +91 {phone}</p>
+                            {demoOtp && (
+                                <div className="mt-3 bg-primary/20 border-2 border-primary/50 text-white p-3 rounded-xl text-center font-bold tracking-widest text-lg shadow-lg">
+                                    Demo OTP: <span className="text-primary text-2xl">{demoOtp}</span>
+                                </div>
+                            )}
                         </div>
 
 
