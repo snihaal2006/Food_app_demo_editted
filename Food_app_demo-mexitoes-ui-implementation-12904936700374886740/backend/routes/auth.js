@@ -71,6 +71,8 @@ router.post('/verify-otp', async (req, res) => {
             .single();
 
         if (otpErr || !storedOtp) {
+            console.error('VERIFY OTP DB ERROR:', JSON.stringify(otpErr));
+            console.error('VERIFY OTP STORED VALUE:', storedOtp);
             return res.status(400).json({ error: 'OTP not found. Please request a new one.' });
         }
         if (Date.now() > storedOtp.expires_at) {
