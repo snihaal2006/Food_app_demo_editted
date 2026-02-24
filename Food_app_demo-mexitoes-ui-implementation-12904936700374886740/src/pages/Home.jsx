@@ -102,7 +102,12 @@ export default function Home() {
           <div className="flex gap-4 overflow-x-auto no-scrollbar pr-4 pb-2">
             <div className="relative min-w-[300px] h-44 rounded-3xl overflow-hidden shrink-0 group">
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10"></div>
-              <img alt="Quick Bites" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1704963925502-7c5c23791fb1?w=600&q=80" />
+              <img
+                alt="Quick Bites"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src="https://images.unsplash.com/photo-1704963925502-7c5c23791fb1?w=600&q=80"
+                onError={(e) => { e.target.src = 'https://dummyimage.com/600x400/ea580c/fff&text=Quick+Bites' }}
+              />
               <div className="relative z-20 h-full flex flex-col justify-center p-6">
                 <span className="inline-block px-3 py-1 bg-primary text-white text-xs font-bold rounded-full mb-2 w-fit">🍢 QUICK BITES</span>
                 <h3 className="text-2xl font-bold text-white leading-tight mb-1">Momos &amp;<br />Burgers</h3>
@@ -112,7 +117,12 @@ export default function Home() {
             </div>
             <div className="relative min-w-[300px] h-44 rounded-3xl overflow-hidden shrink-0 group">
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10"></div>
-              <img alt="Starters" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80" />
+              <img
+                alt="Starters"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src="https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80"
+                onError={(e) => { e.target.src = 'https://dummyimage.com/600x400/dc2626/fff&text=Starters' }}
+              />
               <div className="relative z-20 h-full flex flex-col justify-center p-6">
                 <span className="inline-block px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full mb-2 w-fit">🍗 STARTERS</span>
                 <h3 className="text-2xl font-bold text-white leading-tight mb-1">Kerala &amp;<br />555 Chicken</h3>
@@ -122,7 +132,12 @@ export default function Home() {
             </div>
             <div className="relative min-w-[300px] h-44 rounded-3xl overflow-hidden shrink-0 group">
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10"></div>
-              <img alt="Masalas" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&q=80" />
+              <img
+                alt="Masalas"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&q=80"
+                onError={(e) => { e.target.src = 'https://dummyimage.com/600x400/ca8a04/fff&text=Masalas' }}
+              />
               <div className="relative z-20 h-full flex flex-col justify-center p-6">
                 <span className="inline-block px-3 py-1 bg-yellow-600 text-white text-xs font-bold rounded-full mb-2 w-fit">🍛 MASALAS</span>
                 <h3 className="text-2xl font-bold text-white leading-tight mb-1">Rich Curries &amp;<br />Gravies</h3>
@@ -172,7 +187,12 @@ export default function Home() {
           {displayItems.map(item => (
             <Link key={item.id} to="/menu" className="bg-surface-dark rounded-3xl overflow-hidden shadow-lg border border-surface-highlight hover:border-primary/50 transition-colors group">
               <div className="relative h-48 w-full">
-                <img alt={item.name} className="w-full h-full object-cover" src={item.image_url} />
+                <img
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                  src={item.image_url}
+                  onError={(e) => { e.target.src = `https://dummyimage.com/400x300/1e293b/fff&text=${encodeURIComponent(item.name)}` }}
+                />
                 <div className="absolute top-3 right-3 bg-white/10 backdrop-blur-md border border-white/20 p-1.5 rounded-full">
                   <button className="text-white hover:text-primary transition-colors flex items-center justify-center">
                     <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}>favorite</span>

@@ -130,7 +130,12 @@ export default function Menu() {
               return (
                 <div key={item.id} className="flex gap-3 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-colors p-3">
                   <div className="relative shrink-0 w-24 h-24 rounded-xl overflow-hidden">
-                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                    <img
+                      src={item.image_url}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.src = `https://dummyimage.com/400x300/1e293b/fff&text=${encodeURIComponent(item.name)}` }}
+                    />
                     {item.is_veg ? <span className="absolute top-1 left-1 bg-green-700/90 text-[9px] text-white font-bold px-1 py-0.5 rounded">VEG</span>
                       : <span className="absolute top-1 left-1 bg-red-700/90 text-[9px] text-white font-bold px-1 py-0.5 rounded">NON-VEG</span>}
                   </div>
