@@ -5,7 +5,7 @@ import { ordersAPI } from '../api/api';
 
 export default function Cart() {
   const navigate = useNavigate();
-  const { cartItems, cartSubtotal, cartTax, cartTotal, updateQuantity, loading } = useCart();
+  const { cartItems, cartSubtotal, cartTax, cartTotal, updateQuantity, loading, fetchCart } = useCart();
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [placing, setPlacing] = useState(false);
@@ -20,6 +20,7 @@ export default function Cart() {
     setPlacing(true);
     try {
       const { data } = await ordersAPI.placeOrder();
+      await fetchCart();
       navigate(`/order-success/${data.id}`);
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to place order. Please try again.');
