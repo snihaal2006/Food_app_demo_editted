@@ -60,31 +60,6 @@ router.post('/', async (req, res) => {
         // Clear cart
         await supabase.from('cart_items').delete().eq('user_id', req.userId);
 
-        // Simulate status progression (async)
-        const progressOrder = () => {
-            const progressions = [
-                { delay: 5000, status: 'preparing' },
-                { delay: 30000, status: 'out_for_delivery' },
-                { delay: 90000, status: 'delivered' },
-            ];
-            for (const p of progressions) {
-                setTimeout(async () => {
-                    try {
-                        await supabase
-                            .from('orders')
-                            .update({
-                                status: p.status,
-                                updated_at: new Date().toISOString()
-                            })
-                            .eq('id', orderId);
-                    } catch (err) {
-                        console.error('Order progression error:', err);
-                    }
-                }, p.delay);
-            }
-        };
-        progressOrder();
-
         const { data: order, error: finalOrderErr } = await supabase
             .from('orders')
             .select('*')
@@ -97,6 +72,51 @@ router.post('/', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to place order' });
+    }
+});
+
+// GET /api/orders/admin/all — fetch ALL orders for the admin dashboard
+router.get('/admin/all', async (req, res) => {
+    try {
+        const { data: orders, error } = await supabase
+            .from('orders')
+            .select(`
+                *,
+                users:user_id(name, phone, address)
+            `)
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+
+        // Also fetch order items to display details
+        for (let order of orders) {
+            const { data: items } = await supabase
+                .from('order_items')
+                .select('*')
+                .eq('order_id', order.id);
+            order.items = items || [];
+        }
+
+        res.json(orders);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch all orders' });
+    }
+});
+
+// PUT /api/orders/admin/:id/status — update an order's status
+router.put('/admin/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { error } = await supabase
+            .from('orders')
+            .update({ status, updated_at: new Date().toISOString() })
+            .eq('id', req.params.id);
+
+        if (error) throw error;
+        res.json({ success: true, status });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update order status' });
     }
 });
 

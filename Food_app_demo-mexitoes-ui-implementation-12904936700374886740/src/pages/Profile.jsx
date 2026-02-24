@@ -109,6 +109,7 @@ export default function Profile() {
             { icon: 'location_on', label: 'Delivery Address', sub: profile?.address || 'Not set', action: () => setEditing(true) },
             { icon: 'phone', label: 'Phone', sub: profile?.phone || 'Not set', action: () => setEditing(true) },
             { icon: 'receipt_long', label: 'Order History', sub: '', action: () => navigate('/orders') },
+            { icon: 'admin_panel_settings', label: 'Admin Dashboard', sub: 'Manage live orders', action: () => navigate('/admin') },
             { icon: 'credit_card', label: 'Payment Methods', sub: '', action: () => { } },
             { icon: 'support_agent', label: 'Refunds & Support', sub: '', action: () => { } },
           ].map(item => (

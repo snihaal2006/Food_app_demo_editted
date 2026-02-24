@@ -37,6 +37,8 @@ export const ordersAPI = {
     placeOrder: () => api.post('/orders'),
     getHistory: () => api.get('/orders'),
     getById: (id) => api.get(`/orders/${id}`),
+    getAdminAll: () => api.get('/orders/admin/all'),
+    updateStatus: (id, status) => api.put(`/orders/admin/${id}/status`, { status }),
 };
 
 // ─── Profile ─────────────────────────────────────────────────────────────────

@@ -11,6 +11,7 @@ import OrderHistory from './pages/OrderHistory';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import OrderSuccess from './pages/OrderSuccess';
+import Admin from './pages/Admin';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -44,6 +45,7 @@ function AppRoutes() {
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+        <Route path="/admin" element={<Admin />} />
       </Route>
     </Routes>
   );
