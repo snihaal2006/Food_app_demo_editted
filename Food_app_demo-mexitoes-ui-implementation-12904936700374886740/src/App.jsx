@@ -10,6 +10,7 @@ import Tracking from './pages/Tracking';
 import OrderHistory from './pages/OrderHistory';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
+import OrderSuccess from './pages/OrderSuccess';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -42,6 +43,7 @@ function AppRoutes() {
         <Route path="/tracking/:orderId?" element={<Tracking />} />
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/order-success/:orderId" element={<OrderSuccess />} />
       </Route>
     </Routes>
   );

@@ -20,7 +20,7 @@ export default function Cart() {
     setPlacing(true);
     try {
       const { data } = await ordersAPI.placeOrder();
-      navigate(`/tracking/${data.id}`);
+      navigate(`/order-success/${data.id}`);
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to place order. Please try again.');
     } finally {
