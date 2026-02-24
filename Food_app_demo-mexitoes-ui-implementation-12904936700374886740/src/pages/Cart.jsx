@@ -40,7 +40,7 @@ export default function Cart() {
   const finalTotal = cartTotal - discount;
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl overflow-hidden pb-24 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+    <div className="relative flex flex-1 overflow-y-auto no-scrollbar w-full flex-col max-w-md mx-auto shadow-2xl pb-24 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
       <header className="flex items-center p-4 pb-2 justify-between sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md">
         <button onClick={() => navigate(-1)} className="flex size-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
           <span className="material-symbols-outlined">arrow_back</span>

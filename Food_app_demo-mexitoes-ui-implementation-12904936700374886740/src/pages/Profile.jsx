@@ -48,7 +48,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center w-full max-w-md mx-auto pb-24">
+    <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col items-center w-full max-w-md mx-auto pb-24">
       <div className="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-[#392f28] w-full">
         <div className="flex items-center justify-between p-4 pt-12 pb-3 w-full">
           <button onClick={() => navigate(-1)} className="text-slate-900 dark:text-white flex items-center justify-center rounded-full p-2 hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
