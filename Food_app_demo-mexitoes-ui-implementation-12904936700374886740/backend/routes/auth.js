@@ -2,12 +2,9 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { v4: uuid } = require('uuid');
-const { queryRow, run } = require('../database');
+const { supabase } = require('../database');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'mexitoes-super-secret-key-2024';
-
-// In-memory OTP store: { phone -> { otp, expiresAt } }
-const otpStore = new Map();
 
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -18,7 +15,18 @@ router.post('/send-otp', async (req, res) => {
         return res.status(400).json({ error: 'Please enter a valid 10-digit phone number' });
     }
     const otp = generateOTP();
-    otpStore.set(phone.trim(), { otp, expiresAt: Date.now() + 5 * 60 * 1000 }); // 5 min expiry
+    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 min expiry
+
+    // Save to Supabase since serverless memory is ephemeral
+    try {
+        await supabase.from('otp_store').upsert({
+            phone: phone.trim(),
+            otp,
+            expires_at: expiresAt
+        });
+    } catch (err) {
+        console.error('Error saving OTP to DB:', err);
+    }
 
     // Demo Mode: Print OTP to console
     console.log(`\n[DEMO MODE] 🚨 Generated OTP for ${phone}: ${otp}\n`);
@@ -47,39 +55,71 @@ router.post('/send-otp', async (req, res) => {
 });
 
 // POST /api/auth/verify-otp
-router.post('/verify-otp', (req, res) => {
-    const { phone, otp, name } = req.body;
-    if (!phone || !otp) {
-        return res.status(400).json({ error: 'Phone and OTP are required' });
-    }
+router.post('/verify-otp', async (req, res) => {
+    try {
+        const { phone, otp, name } = req.body;
+        if (!phone || !otp) {
+            return res.status(400).json({ error: 'Phone and OTP are required' });
+        }
 
-    const stored = otpStore.get(phone.trim());
-    if (!stored) {
-        return res.status(400).json({ error: 'OTP not found. Please request a new one.' });
-    }
-    if (Date.now() > stored.expiresAt) {
-        otpStore.delete(phone.trim());
-        return res.status(400).json({ error: 'OTP has expired. Please request a new one.' });
-    }
-    if (stored.otp !== otp.trim()) {
-        return res.status(400).json({ error: 'Invalid OTP. Please try again.' });
-    }
+        // Fetch OTP from Supabase
+        const { data: storedOtp, error: otpErr } = await supabase
+            .from('otp_store')
+            .select('*')
+            .eq('phone', phone.trim())
+            .single();
 
-    // OTP valid — clear it
-    otpStore.delete(phone.trim());
+        if (otpErr || !storedOtp) {
+            return res.status(400).json({ error: 'OTP not found. Please request a new one.' });
+        }
+        if (Date.now() > storedOtp.expires_at) {
+            await supabase.from('otp_store').delete().eq('phone', phone.trim());
+            return res.status(400).json({ error: 'OTP has expired. Please request a new one.' });
+        }
+        if (storedOtp.otp !== otp.trim()) {
+            return res.status(400).json({ error: 'Invalid OTP. Please try again.' });
+        }
 
-    // Find or create user by phone
-    let user = queryRow('SELECT id, name, phone, email, address, loyalty_tier FROM users WHERE phone = ?', [phone.trim()]);
-    if (!user) {
-        const id = uuid();
-        const displayName = name || `User${phone.trim().slice(-4)}`;
-        run('INSERT INTO users (id, name, phone, email, password_hash) VALUES (?, ?, ?, ?, ?)',
-            [id, displayName, phone.trim(), '', '']);
-        user = queryRow('SELECT id, name, phone, email, address, loyalty_tier FROM users WHERE id = ?', [id]);
+        // OTP valid — clear it
+        await supabase.from('otp_store').delete().eq('phone', phone.trim());
+
+        // Find or create user by phone
+        const { data: users, error: findErr } = await supabase
+            .from('users')
+            .select('id, name, phone, email, address, loyalty_tier')
+            .eq('phone', phone.trim());
+
+        if (findErr) throw findErr;
+
+        let user = users?.[0];
+
+        if (!user) {
+            const id = uuid();
+            const displayName = name || `User${phone.trim().slice(-4)}`;
+
+            const { error: insertErr } = await supabase.from('users').insert({
+                id,
+                name: displayName,
+                phone: phone.trim(),
+                email: `${id}@placeholder.com`, // enforce unique
+                password_hash: ''
+            });
+            if (insertErr) throw insertErr;
+
+            const { data: newUser } = await supabase
+                .from('users')
+                .select('id, name, phone, email, address, loyalty_tier')
+                .eq('id', id)
+                .single();
+            user = newUser;
+        }
+
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
+        res.json({ token, user, isNewUser: !user.name || user.name.startsWith('User') });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error verifying OTP' });
     }
-
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
-    res.json({ token, user, isNewUser: !user.name || user.name.startsWith('User') });
 });
 
 module.exports = router;

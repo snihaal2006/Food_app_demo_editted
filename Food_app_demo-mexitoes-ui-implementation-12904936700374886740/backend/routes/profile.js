@@ -1,18 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const { queryRow, run } = require('../database');
+const { supabase } = require('../database');
 
 router.use(auth);
 
 // GET /api/profile
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const user = queryRow(
-            'SELECT id, name, email, phone, address, loyalty_tier, created_at FROM users WHERE id = ?',
-            [req.userId]
-        );
-        if (!user) return res.status(404).json({ error: 'User not found' });
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('id, name, email, phone, address, loyalty_tier, created_at')
+            .eq('id', req.userId)
+            .single();
+
+        if (error || !user) return res.status(404).json({ error: 'User not found' });
         res.json(user);
     } catch (err) {
         console.error(err);
@@ -21,17 +23,29 @@ router.get('/', (req, res) => {
 });
 
 // PUT /api/profile
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
     try {
         const { name, phone, address } = req.body;
-        run(
-            'UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?',
-            [name || '', phone || '', address || '', req.userId]
-        );
-        const user = queryRow(
-            'SELECT id, name, email, phone, address, loyalty_tier, created_at FROM users WHERE id = ?',
-            [req.userId]
-        );
+
+        const { error: updateErr } = await supabase
+            .from('users')
+            .update({
+                name: name || '',
+                phone: phone || '',
+                address: address || ''
+            })
+            .eq('id', req.userId);
+
+        if (updateErr) throw updateErr;
+
+        const { data: user, error: selectErr } = await supabase
+            .from('users')
+            .select('id, name, email, phone, address, loyalty_tier, created_at')
+            .eq('id', req.userId)
+            .single();
+
+        if (selectErr) throw selectErr;
+
         res.json(user);
     } catch (err) {
         console.error(err);

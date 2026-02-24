@@ -1,21 +1,38 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const { query, queryRow, run } = require('../database');
+const { supabase } = require('../database');
 
 router.use(auth);
 
+// Helper to fetch flat cart details
+const fetchCart = async (userId) => {
+    const { data: items, error } = await supabase
+        .from('cart_items')
+        .select(`
+            menu_item_id, 
+            quantity, 
+            menu_items (name, price, image_url, category)
+        `)
+        .eq('user_id', userId);
+
+    if (error) throw error;
+
+    return items.map(i => ({
+        menu_item_id: i.menu_item_id,
+        quantity: i.quantity,
+        name: i.menu_items?.name,
+        price: i.menu_items?.price,
+        image_url: i.menu_items?.image_url,
+        category: i.menu_items?.category
+    }));
+};
+
 // GET /api/cart
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const items = query(
-            `SELECT c.menu_item_id, c.quantity, m.name, m.price, m.image_url, m.category
-       FROM cart_items c
-       JOIN menu_items m ON c.menu_item_id = m.id
-       WHERE c.user_id = ?`,
-            [req.userId]
-        );
-        res.json(items);
+        const mappedItems = await fetchCart(req.userId);
+        res.json(mappedItems);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch cart' });
@@ -23,24 +40,32 @@ router.get('/', (req, res) => {
 });
 
 // POST /api/cart — add or update item
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { menu_item_id, quantity } = req.body;
         if (!menu_item_id || quantity == null) return res.status(400).json({ error: 'menu_item_id and quantity required' });
-        const existing = queryRow(
-            'SELECT id FROM cart_items WHERE user_id = ? AND menu_item_id = ?',
-            [req.userId, menu_item_id]
-        );
+
+        const { data: existing } = await supabase
+            .from('cart_items')
+            .select('id')
+            .eq('user_id', req.userId)
+            .eq('menu_item_id', menu_item_id)
+            .maybeSingle();
+
         if (existing) {
-            run('UPDATE cart_items SET quantity = ? WHERE user_id = ? AND menu_item_id = ?', [quantity, req.userId, menu_item_id]);
+            await supabase
+                .from('cart_items')
+                .update({ quantity })
+                .eq('user_id', req.userId)
+                .eq('menu_item_id', menu_item_id);
         } else {
-            run('INSERT INTO cart_items (user_id, menu_item_id, quantity) VALUES (?, ?, ?)', [req.userId, menu_item_id, quantity]);
+            await supabase
+                .from('cart_items')
+                .insert({ user_id: req.userId, menu_item_id, quantity });
         }
-        const items = query(
-            `SELECT c.menu_item_id, c.quantity, m.name, m.price, m.image_url FROM cart_items c JOIN menu_items m ON c.menu_item_id = m.id WHERE c.user_id = ?`,
-            [req.userId]
-        );
-        res.json(items);
+
+        const mappedItems = await fetchCart(req.userId);
+        res.json(mappedItems);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update cart' });
@@ -48,9 +73,14 @@ router.post('/', (req, res) => {
 });
 
 // DELETE /api/cart/:menu_item_id
-router.delete('/:menu_item_id', (req, res) => {
+router.delete('/:menu_item_id', async (req, res) => {
     try {
-        run('DELETE FROM cart_items WHERE user_id = ? AND menu_item_id = ?', [req.userId, req.params.menu_item_id]);
+        await supabase
+            .from('cart_items')
+            .delete()
+            .eq('user_id', req.userId)
+            .eq('menu_item_id', req.params.menu_item_id);
+
         res.json({ success: true });
     } catch (err) {
         console.error(err);
@@ -59,9 +89,13 @@ router.delete('/:menu_item_id', (req, res) => {
 });
 
 // DELETE /api/cart — clear cart
-router.delete('/', (req, res) => {
+router.delete('/', async (req, res) => {
     try {
-        run('DELETE FROM cart_items WHERE user_id = ?', [req.userId]);
+        await supabase
+            .from('cart_items')
+            .delete()
+            .eq('user_id', req.userId);
+
         res.json({ success: true });
     } catch (err) {
         console.error(err);

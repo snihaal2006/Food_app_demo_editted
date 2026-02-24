@@ -2,20 +2,32 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuid } = require('uuid');
 const auth = require('../middleware/auth');
-const { query, queryRow, run } = require('../database');
+const { supabase } = require('../database');
 
 router.use(auth);
 
 // POST /api/orders — place order from cart
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        const cartItems = query(
-            `SELECT c.menu_item_id, c.quantity, m.name, m.price
-       FROM cart_items c
-       JOIN menu_items m ON c.menu_item_id = m.id
-       WHERE c.user_id = ?`,
-            [req.userId]
-        );
+        // Fetch cart items
+        const { data: items, error: cartErr } = await supabase
+            .from('cart_items')
+            .select(`
+                menu_item_id, 
+                quantity, 
+                menu_items (name, price)
+            `)
+            .eq('user_id', req.userId);
+
+        if (cartErr) throw cartErr;
+
+        const cartItems = items.map(i => ({
+            menu_item_id: i.menu_item_id,
+            quantity: i.quantity,
+            name: i.menu_items?.name,
+            price: i.menu_items?.price
+        }));
+
         if (!cartItems.length) return res.status(400).json({ error: 'Your cart is empty' });
 
         const subtotal = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -25,22 +37,30 @@ router.post('/', (req, res) => {
         const orderId = uuid();
         const itemsSummary = cartItems.map(i => `${i.quantity}x ${i.name}`).join(', ');
 
-        run(
-            'INSERT INTO orders (id, user_id, total, status, items_summary) VALUES (?, ?, ?, ?, ?)',
-            [orderId, req.userId, total, 'placed', itemsSummary]
-        );
+        const { error: orderErr } = await supabase.from('orders').insert({
+            id: orderId,
+            user_id: req.userId,
+            total,
+            status: 'placed',
+            items_summary: itemsSummary
+        });
+        if (orderErr) throw orderErr;
 
-        for (const item of cartItems) {
-            run(
-                'INSERT INTO order_items (order_id, menu_item_id, name, price, quantity) VALUES (?, ?, ?, ?, ?)',
-                [orderId, item.menu_item_id, item.name, item.price, item.quantity]
-            );
-        }
+        const orderItemsToInsert = cartItems.map(item => ({
+            order_id: orderId,
+            menu_item_id: item.menu_item_id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+        }));
+
+        const { error: orderItemsErr } = await supabase.from('order_items').insert(orderItemsToInsert);
+        if (orderItemsErr) throw orderItemsErr;
 
         // Clear cart
-        run('DELETE FROM cart_items WHERE user_id = ?', [req.userId]);
+        await supabase.from('cart_items').delete().eq('user_id', req.userId);
 
-        // Simulate status progression
+        // Simulate status progression (async)
         const progressOrder = () => {
             const progressions = [
                 { delay: 5000, status: 'preparing' },
@@ -48,16 +68,31 @@ router.post('/', (req, res) => {
                 { delay: 90000, status: 'delivered' },
             ];
             for (const p of progressions) {
-                setTimeout(() => {
+                setTimeout(async () => {
                     try {
-                        run('UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [p.status, orderId]);
-                    } catch { }
+                        await supabase
+                            .from('orders')
+                            .update({
+                                status: p.status,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', orderId);
+                    } catch (err) {
+                        console.error('Order progression error:', err);
+                    }
                 }, p.delay);
             }
         };
         progressOrder();
 
-        const order = queryRow('SELECT * FROM orders WHERE id = ?', [orderId]);
+        const { data: order, error: finalOrderErr } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('id', orderId)
+            .single();
+
+        if (finalOrderErr) throw finalOrderErr;
+
         res.status(201).json(order);
     } catch (err) {
         console.error(err);
@@ -66,12 +101,15 @@ router.post('/', (req, res) => {
 });
 
 // GET /api/orders — order history
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const orders = query(
-            'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC',
-            [req.userId]
-        );
+        const { data: orders, error } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('user_id', req.userId)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
         res.json(orders);
     } catch (err) {
         console.error(err);
@@ -80,12 +118,24 @@ router.get('/', (req, res) => {
 });
 
 // GET /api/orders/:id
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const order = queryRow('SELECT * FROM orders WHERE id = ? AND user_id = ?', [req.params.id, req.userId]);
-        if (!order) return res.status(404).json({ error: 'Order not found' });
+        const { data: order, error: orderErr } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('id', req.params.id)
+            .eq('user_id', req.userId)
+            .single();
 
-        const items = query('SELECT * FROM order_items WHERE order_id = ?', [req.params.id]);
+        if (orderErr || !order) return res.status(404).json({ error: 'Order not found' });
+
+        const { data: items, error: itemsErr } = await supabase
+            .from('order_items')
+            .select('*')
+            .eq('order_id', req.params.id);
+
+        if (itemsErr) throw itemsErr;
+
         res.json({ ...order, items });
     } catch (err) {
         console.error(err);
