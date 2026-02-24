@@ -8,9 +8,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#ce1713", // Romantic Kiss (Red)
-        "primary-dark": "#a8120e",
-        "accent": "#ffc152", // Web Golden Tainoi (Yellow)
+        "primary": "#d90429", // Red
+        "primary-dark": "#a80320", // Darker Red
+        "accent": "#ffc300", // Yellow
         "background-light": "#f8f7f6",
         "background-dark": "#000000", // Black
         "surface-dark": "#111111",
