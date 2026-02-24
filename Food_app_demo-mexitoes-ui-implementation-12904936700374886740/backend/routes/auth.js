@@ -18,14 +18,15 @@ router.post('/send-otp', async (req, res) => {
     const expiresAt = Date.now() + 5 * 60 * 1000; // 5 min expiry
 
     // Save to Supabase since serverless memory is ephemeral
-    try {
-        await supabase.from('otp_store').upsert({
-            phone: phone.trim(),
-            otp,
-            expires_at: expiresAt
-        });
-    } catch (err) {
-        console.error('Error saving OTP to DB:', err);
+    const { error: dbErr } = await supabase.from('otp_store').upsert({
+        phone: phone.trim(),
+        otp,
+        expires_at: expiresAt
+    });
+
+    if (dbErr) {
+        console.error('Supabase DB Error during OTP save:', dbErr);
+        return res.status(500).json({ error: 'Database error storing OTP. Did you run the SQL schema script?' });
     }
 
     // Demo Mode: Print OTP to console
