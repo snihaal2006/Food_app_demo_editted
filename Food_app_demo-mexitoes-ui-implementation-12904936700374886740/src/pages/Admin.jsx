@@ -8,6 +8,7 @@ export default function Admin() {
     const { user } = useAuth();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('live');
 
     const fetchOrders = async () => {
         try {
@@ -76,15 +77,31 @@ export default function Admin() {
                 </button>
             </div>
 
+            {/* Tabs */}
+            <div className="flex border-b border-white/5 mb-4 sticky top-[88px] z-10 bg-background-dark/95 backdrop-blur-md">
+                <button
+                    onClick={() => setActiveTab('live')}
+                    className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === 'live' ? 'text-primary border-primary' : 'text-slate-400 border-transparent hover:text-slate-200'}`}
+                >
+                    Live Orders
+                </button>
+                <button
+                    onClick={() => setActiveTab('delivered')}
+                    className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === 'delivered' ? 'text-primary border-primary' : 'text-slate-400 border-transparent hover:text-slate-200'}`}
+                >
+                    Delivered History
+                </button>
+            </div>
+
             {/* Orders List */}
-            <div className="p-4 space-y-4">
-                {orders.length === 0 ? (
+            <div className="p-4 space-y-4 pt-0">
+                {orders.filter(o => activeTab === 'live' ? o.status !== 'delivered' : o.status === 'delivered').length === 0 ? (
                     <div className="flex flex-col items-center justify-center mt-20 text-slate-500">
                         <span className="material-symbols-outlined text-5xl mb-3 opacity-50">receipt_long</span>
-                        <p>No orders found.</p>
+                        <p>No {activeTab} orders found.</p>
                     </div>
                 ) : (
-                    orders.map(order => (
+                    orders.filter(o => activeTab === 'live' ? o.status !== 'delivered' : o.status === 'delivered').map(order => (
                         <div key={order.id} className="bg-surface-dark border border-white/5 rounded-2xl p-5 shadow-lg relative overflow-hidden">
                             {/* Highlight bar base on status */}
                             <div className={`absolute left-0 top-0 bottom-0 w-1 ${order.status === 'delivered' ? 'bg-green-500' : 'bg-primary'}`}></div>
@@ -134,30 +151,32 @@ export default function Admin() {
                                 </div>
                             </div>
 
-                            {/* Actions */}
-                            <div className="flex gap-2 mt-4 pt-2">
-                                <button
-                                    onClick={() => handleStatusChange(order.id, 'preparing')}
-                                    disabled={order.status === 'preparing'}
-                                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${order.status === 'preparing' ? 'bg-yellow-500/20 text-yellow-500 border border-yellow-500/30' : 'bg-surface-highlight text-white hover:bg-yellow-500/20 hover:text-yellow-400'}`}
-                                >
-                                    PREPARE
-                                </button>
-                                <button
-                                    onClick={() => handleStatusChange(order.id, 'out_for_delivery')}
-                                    disabled={order.status === 'out_for_delivery'}
-                                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${order.status === 'out_for_delivery' ? 'bg-purple-500/20 text-purple-500 border border-purple-500/30' : 'bg-surface-highlight text-white hover:bg-purple-500/20 hover:text-purple-400'}`}
-                                >
-                                    DISPATCH
-                                </button>
-                                <button
-                                    onClick={() => handleStatusChange(order.id, 'delivered')}
-                                    disabled={order.status === 'delivered'}
-                                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${order.status === 'delivered' ? 'bg-green-500/20 text-green-500 border border-green-500/30' : 'bg-surface-highlight text-white hover:bg-green-500/20 hover:text-green-400'}`}
-                                >
-                                    DELIVER
-                                </button>
-                            </div>
+                            {/* Actions (Only show for live orders) */}
+                            {activeTab === 'live' && (
+                                <div className="flex gap-2 mt-4 pt-2">
+                                    <button
+                                        onClick={() => handleStatusChange(order.id, 'preparing')}
+                                        disabled={order.status === 'preparing'}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${order.status === 'preparing' ? 'bg-yellow-500/20 text-yellow-500 border border-yellow-500/30' : 'bg-surface-highlight text-white hover:bg-yellow-500/20 hover:text-yellow-400'}`}
+                                    >
+                                        PREPARE
+                                    </button>
+                                    <button
+                                        onClick={() => handleStatusChange(order.id, 'out_for_delivery')}
+                                        disabled={order.status === 'out_for_delivery'}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${order.status === 'out_for_delivery' ? 'bg-purple-500/20 text-purple-500 border border-purple-500/30' : 'bg-surface-highlight text-white hover:bg-purple-500/20 hover:text-purple-400'}`}
+                                    >
+                                        DISPATCH
+                                    </button>
+                                    <button
+                                        onClick={() => handleStatusChange(order.id, 'delivered')}
+                                        disabled={order.status === 'delivered'}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${order.status === 'delivered' ? 'bg-green-500/20 text-green-500 border border-green-500/30' : 'bg-surface-highlight text-white hover:bg-green-500/20 hover:text-green-400'}`}
+                                    >
+                                        DELIVER
+                                    </button>
+                                </div>
+                            )}
 
                         </div>
                     ))
